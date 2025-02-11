@@ -17,29 +17,39 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-
+@RestController
 public class PatientController {
 
+    @Autowired
+    private AppointmentService appointmentService;
+
+    @Autowired
+    private MedicalRecordService medicalRecordService;
+
+    @Autowired
+    private DoctorService doctorService;
 
     @GetMapping("/api/patient/doctors")
     public ResponseEntity<List<Doctor>> getDoctors() {
-        // get all doctors
+        return ResponseEntity.ok(doctorService.getAllDoctors());
     }
 
     @PostMapping("/api/patient/appointment")
     public ResponseEntity<?> scheduleAppointment(@RequestParam Long patientId,
                                                  @RequestParam Long doctorId,
                                                  @RequestBody TimeDto timeDto) {
-      // schedule appointment
+        Appointment appointment = appointmentService.scheduleAppointment(patientId, doctorId, timeDto.getTime());
+        return ResponseEntity.ok(appointment);
     }
 
     @GetMapping("/api/patient/appointments")
     public ResponseEntity<List<Appointment>> getAppointmentsByPatientId(@RequestParam Long patientId) {
-        // get appointments by patient id
+        return ResponseEntity.ok(appointmentService.getAppointmentsByPatientId(patientId));
     }
 
     @GetMapping("/api/patient/medicalrecords")
     public ResponseEntity<List<MedicalRecord>> viewMedicalRecords(@RequestParam Long patientId) {
-        // view medical records
+        List<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordsByPatientId(patientId);
+        return ResponseEntity.ok(medicalRecords);
     }
 }

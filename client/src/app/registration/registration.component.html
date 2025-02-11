@@ -1,1 +1,71 @@
-//todo: complete missing code..
+<form [formGroup]="itemForm" (ngSubmit)="onRegister()">
+  <div>
+    <div>
+      <input formControlName="username" placeholder="Username" required>
+      <div *ngIf="itemForm.get('username')?.invalid && itemForm.get('username')?.touched">
+        <small *ngIf="itemForm.get('username')?.errors?.['required']">
+          Username is required.
+        </small>
+      </div>
+    </div>
+
+
+
+    <div>
+      <input formControlName="email" placeholder="Email" />
+      <div *ngIf="itemForm.get('email')?.invalid && itemForm.get('email')?.touched">
+        <small *ngIf="itemForm.get('email')?.errors?.['required']">
+          email is required.
+        </small>
+        <small *ngIf="itemForm.get('email')?.errors?.['email']">
+          Enter valid pattern.
+        </small>
+      </div>
+    </div>
+
+    <div>
+      <input type="password" formControlName="password" placeholder="Password" />
+      <div *ngIf="itemForm.get('password')?.invalid && itemForm.get('password')?.touched">
+        <small *ngIf="itemForm.get('password')?.errors?.['required']">
+          password is required.
+        </small>
+      </div>
+    </div>
+
+    <div>
+      <select formControlName="role">
+        <option value="">Select Role</option>
+        <option value="PATIENT">Patient</option>
+        <option value="DOCTOR">Doctor</option>
+        <option value="RECEPTIONIST">Receptionist</option>
+      </select>
+      <div *ngIf="itemForm.get('role')?.invalid && itemForm.get('role')?.touched">
+        Role is required.
+      </div>
+    </div>
+
+    <div>
+      <div *ngIf="itemForm.get('role')?.value === 'DOCTOR'">
+        <input formControlName="specialty" placeholder="Specialty" />
+        <div *ngIf="itemForm.get('specialty')?.invalid && itemForm.get('specialty')?.touched">
+          Specialty is required for doctors.
+        </div>
+
+      </div>
+
+      <div>
+        <input formControlName="availability" placeholder="Availability" />
+        <div *ngIf="itemForm.get('availability')?.invalid && itemForm.get('availability')?.touched">
+          Availability is required for doctors.
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="itemForm.invalid">Register</button>
+  </div>
+</form>
+
+<!-- Success Message -->
+<div *ngIf="showMessage">
+  {{ responseMessage }}
+</div>

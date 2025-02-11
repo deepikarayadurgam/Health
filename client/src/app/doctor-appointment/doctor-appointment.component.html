@@ -1,1 +1,55 @@
+<<<<<<< HEAD
+<div class="container mt-4">
+    <h2>My Appointments</h2>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    
+    <!-- Appointments Table -->
+    <div *ngIf="appointmentList.length > 0; else noAppointments">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Appointment ID</th>
+            <th>Date & Time</th>
+            <th>Patient Name</th>
+            <th>Patient Email</th>
+            <th>Status</th>
+            <!-- <th colspan="2">Action</th> -->
+            <!-- You can add more columns if needed -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appointment of appointmentList">
+            <td>{{ appointment.id }}</td>
+            <td>{{ appointment.appointmentTime | date: 'dd-MM-yyyy HH:mm' }}</td>
+            <td>{{ appointment.patient.username }}</td>
+            <td>{{ appointment.patient.email }}</td>
+            <td>{{ appointment.status }}</td>
+            <!-- You can add actions or links here -->
+            <!-- Add a column in the table header -->
+            <!-- <td>
+                <button class="btn btn-primary btn-sm" (click)="viewDetails(appointment)">View Details</button>
+            </td>
+            <td>
+                <button class="btn btn-success btn-sm" (click)="markAsCompleted(appointment)">Mark as Completed</button>
+              </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- No Appointments Message -->
+    <ng-template #noAppointments>
+      <div class="alert alert-info">
+        You have no scheduled appointments.
+      </div>
+    </ng-template>
+  </div>
+  
+=======
 //todo: complete missing code..
+>>>>>>> 73c4faace8ae78abb1be017c7a2b6676a55de2d5

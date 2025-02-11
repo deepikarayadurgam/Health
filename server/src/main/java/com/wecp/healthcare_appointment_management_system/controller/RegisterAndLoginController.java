@@ -21,30 +21,52 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-
+@RestController
 public class RegisterAndLoginController {
 
+    @Autowired
+    private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     @PostMapping("/api/patient/register")
     public ResponseEntity<Patient> registerPatient(@RequestBody Patient patient) {
-        // register patient
+        Patient registeredPatient = userService.registerPatient(patient);
+        return new ResponseEntity<>(registeredPatient, HttpStatus.CREATED);
     }
 
     @PostMapping("/api/doctors/register")
     public ResponseEntity<Doctor> registerDoctor(@RequestBody Doctor doctor) {
-        // register doctor
+        Doctor registerDoctor = userService.registerDoctor(doctor);
+        return new ResponseEntity<>(registerDoctor, HttpStatus.CREATED);
     }
 
     @PostMapping("/api/receptionist/register")
     public ResponseEntity<Receptionist> registerReceptionist(@RequestBody Receptionist receptionist) {
-       // register receptionist
+        Receptionist registerReceptionist = userService.registerReceptionist(receptionist);
+        return new ResponseEntity<>(registerReceptionist, HttpStatus.CREATED);
     }
 
     @PostMapping("/api/user/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
-      // login user and return jwt in LoginResponse object
-        // return 401 unauthorized if authentication fail
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password", e);
+        }
+
+        final UserDetails userDetails = userService.loadUserByUsername(loginRequest.getUsername());
+        final String token = jwtUtil.generateToken(userDetails.getUsername());
+
+        User user = userService.getUserByUsername(loginRequest.getUsername());
+
+        return ResponseEntity.ok(new LoginResponse(user.getId(),token, user.getUsername(), user.getEmail(), user.getRole()));
     }
 }

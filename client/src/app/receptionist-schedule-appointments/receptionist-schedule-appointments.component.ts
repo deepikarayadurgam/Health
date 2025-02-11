@@ -13,37 +13,59 @@ import { DatePipe } from '@angular/common';
 export class ReceptionistScheduleAppointmentsComponent implements OnInit {
   
   itemForm: FormGroup;
-  formModel:any={};
-  responseMessage:any;
-  isAdded: boolean=false;
-  constructor(public httpService:HttpService,private formBuilder: FormBuilder,private datePipe: DatePipe) {
-    this.itemForm = this.formBuilder.group({
-      patientId: [this.formModel.patientId,[ Validators.required]],
-      doctorId: [this.formModel.doctorId,[ Validators.required]],
-      time: [this.formModel.time,[ Validators.required]],
-  });
-   }
+  formModel: any = {};
+  responseMessage: any;
+  isAdded: boolean = false;
 
-  ngOnInit(): void {
-  
+  constructor(
+    public httpService: HttpService,
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe
+  ) {
+    // Initializes the form controls
+    this.itemForm = this.formBuilder.group({
+      patientId: ['', Validators.required],
+      doctorId: ['', Validators.required],
+      time: ['', Validators.required]
+    });
   }
 
-  onSubmit()
-  {
-   
-    debugger;
-    const formattedTime = this.datePipe.transform(this.itemForm.controls['time'].value, 'yyyy-MM-dd HH:mm:ss');
+  ngOnInit(): void {
+    // Initialization logic can be added here if needed
+  }
 
-    // Update the form value with the formatted date
-    this.itemForm.controls['time'].setValue(formattedTime);
-    debugger;
-    this.httpService.ScheduleAppointmentByReceptionist( this.itemForm.value).subscribe((data)=>{
-   
-      this.itemForm.reset();
-      this.responseMessage="Appointment Save Successfully";
-      this.isAdded=false;
-    })
-    
+  onSubmit() {
+    if (this.itemForm.valid) {
+      // Retrieves form values
+      const patientId = this.itemForm.controls['patientId'].value;
+      const doctorId = this.itemForm.controls['doctorId'].value;
+      const timeInput = this.itemForm.controls['time'].value; // ISO format from datetime-local input
+
+      // Formats the time input using DatePipe to 'yyyy-MM-dd HH:mm:ss' format
+      const formattedTime = this.datePipe.transform(timeInput, 'yyyy-MM-dd HH:mm:ss');
+
+      // Prepares the appointment data
+      const appointmentData = {
+        patientId: patientId,
+        doctorId: doctorId,
+        time: formattedTime
+      };
+
+      // Calls HttpService to schedule the appointment
+      this.httpService.ScheduleAppointmentByReceptionist(appointmentData).subscribe(
+        response => {
+          this.responseMessage = 'Appointment scheduled successfully!';
+          this.itemForm.reset();
+          this.isAdded = false;
+        },
+        error => {
+          console.error('Error scheduling appointment:', error);
+        }
+      );
+    } else {
+      console.log('Form is invalid');
+      // Optionally, you can display validation errors here
+    }
   }
 
 }

@@ -1,1 +1,38 @@
+<<<<<<< HEAD
+<div class="container mt-4">
+    <h2>Set Your Availability</h2>
+  
+    <!-- Success Message -->
+    <div *ngIf="responseMessage" class="alert alert-success">
+      {{ responseMessage }}
+    </div>
+  
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+      <!-- Availability Field -->
+      <div class="form-group">
+        <label for="availability">Availability</label>
+        <input
+          type="text"
+          id="availability"
+          class="form-control"
+          formControlName="availability"
+          placeholder="Enter your availability"
+        />
+        <div
+          *ngIf="itemForm.controls['availability'].invalid && itemForm.controls['availability'].touched"
+          class="text-danger"
+        >
+          Availability is required.
+        </div>
+      </div>
+  
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary" [disabled]="itemForm.invalid">
+        Update Availability
+      </button>
+    </form>
+  </div>
+  
+=======
 //todo: complete missing code..
+>>>>>>> 73c4faace8ae78abb1be017c7a2b6676a55de2d5
